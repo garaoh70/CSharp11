@@ -1,4 +1,5 @@
-﻿using CSharp11.CS11;
+﻿using System.Text;
+using CSharp11.CS11;
 
 namespace CSharp11UnitTest;
 
@@ -32,5 +33,43 @@ public class Tests
         var utf8 = new Utf8StringLiterals(utf8string);
         Assert.That(utf8.Utf8Bytes.Length, Is.EqualTo(utf8byte.Length));
         Assert.That(utf8.Utf8Bytes.Zip(utf8byte, (a, b) => a == b).All(x => x), Is.True);
+    }
+
+    [Test]
+    public void RawStringLiteralsUnitTest1()
+    {
+        var year = 2023;
+        var month = 1;
+        var day = 29;
+        var orgstring = "Today is \"2023/1/29\".";
+
+        var rawstring1 = """Today is "2023/1/29".""";
+        var rawstring2 = $$"""Today is "{{year}}/{{month}}/{{day}}".""";
+
+        var raw1 = new RawStringLiterals(rawstring1);
+        var raw2 = new RawStringLiterals(rawstring2);
+
+        Assert.That(raw1.Raw, Is.EqualTo(orgstring));
+        Assert.That(raw2.Raw, Is.EqualTo(orgstring));
+    }
+
+    [Test]
+    public void RawStringLiteralsUnitTest2()
+    {
+        // インデントが適用されている（日本語おかしい）
+        // 最終行には改行は入っていない模様
+        var rawstring1 = """
+            Today is "2023/1/29".
+            Nice to meet you.
+            """;
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Today is \"2023/1/29\".");
+        sb.Append("Nice to meet you.");
+        var orgstring = sb.ToString();
+
+        var raw1 = new RawStringLiterals(rawstring1);
+
+        Assert.That(raw1.Raw, Is.EqualTo(orgstring));
     }
 }
