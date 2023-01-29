@@ -72,4 +72,72 @@ public class Tests
 
         Assert.That(raw1.Raw, Is.EqualTo(orgstring));
     }
+
+    [Test]
+    public void RequiredMemberTest1()
+    {
+        // コンパイルエラー
+        // var r1 = new RequiredMember1();
+        // コンパイル成功
+        var r1 = new RequiredMember1
+        {
+            Prop1 = 1,
+            Prop2 = 2,
+        };
+        Assert.That(r1.Prop1, Is.EqualTo(1));
+        Assert.That(r1.Prop2, Is.EqualTo(2));
+
+        // コンパイルエラー
+        // var r2 = new RequiredMember2(prop1: 1, prop2: 2);
+        // コンパイル成功：こんなことするくらいなら引数２つのコンストラクタは不要
+        var r2 = new RequiredMember2(prop1: 1, prop2: 2)
+        {
+            Prop1 = 1,
+            Prop2 = 2,
+        };
+        Assert.That(r2.Prop1, Is.EqualTo(1));
+        Assert.That(r2.Prop2, Is.EqualTo(2));
+
+        // コンパイルエラー
+        // var r3 = new RequiredMember3(1, 2);
+        // コンパイル成功：こんなことするくらいなら引数２つのコンストラクタは不要
+        var r3 = new RequiredMember3(1, 2)
+        {
+            Prop1 = 1,
+            Prop2 = 2,
+        };
+        Assert.That(r3.Prop1, Is.EqualTo(1));
+        Assert.That(r3.Prop2, Is.EqualTo(2));
+
+        // なるほど、派生クラスで引数ありのコンストラクタは不要なのは良いかも。
+        // インスタンスを作る側はコードは増えるが・・・わかりやすいかな？
+        var sub1 = new SubRequiredMember1
+        {
+            Prop1 = 1,
+            Prop2 = 2,
+            Prop3 = 3,
+            Prop4 = 4,
+        };
+        Assert.That(sub1.Prop1, Is.EqualTo(1));
+        Assert.That(sub1.Prop2, Is.EqualTo(2));
+        Assert.That(sub1.Prop3, Is.EqualTo(3));
+        Assert.That(sub1.Prop4, Is.EqualTo(4));
+    }
+
+    [Test]
+    public void RequiredMemberTest2()
+    {
+        // コンパイル成功：プロパティにデフォルトが入っている？
+        var n1 = new NonRequiredMember1();
+        Assert.That(n1.Prop1, Is.Null);
+        Assert.That(n1.Prop2, Is.Null);
+
+        var n2 = new NonRequiredMember2(prop2: 2);
+        Assert.That(n2.Prop1, Is.Null);
+        Assert.That(n2.Prop2, Is.EqualTo(2));
+
+        var n3 = new NonRequiredMember3(1, 2);
+        Assert.That(n3.Prop1, Is.EqualTo(1));
+        Assert.That(n3.Prop2, Is.EqualTo(2));
+    }
 }
